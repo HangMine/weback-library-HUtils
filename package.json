@@ -1,6 +1,6 @@
 {
   "name": "hang-utils",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "",
   "main": "dist/HUtils.js",
   "module": "src/index.js",
@@ -12,6 +12,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-transform-runtime": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "@babel/runtime-corejs3": "^7.9.2",
+    "babel-loader": "^8.1.0",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11"
   }

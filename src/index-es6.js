@@ -7,13 +7,12 @@
  */
 
 function arr2d(arr, num, isSave) {
-  var sum = Math.ceil(arr.length / num); //可以切成的二维数组个数
-  var currentTime = 1; //当前在Push第几个二堆数组
-  var resArr = [];
-  var itemArr = []; // 存放二堆单个数组
+  const sum = Math.ceil(arr.length / num); //可以切成的二维数组个数
+  let currentTime = 1; //当前在Push第几个二堆数组
+  let resArr = [];
+  let itemArr = []; // 存放二堆单个数组
 
-  for (var i = 0; i < arr.length; i++) {
-    var item = arr[i];
+  for (const [i, item] of Object.entries(arr)) {
     itemArr.push(item);
 
     if (currentTime < sum) {
@@ -28,7 +27,6 @@ function arr2d(arr, num, isSave) {
       if (isSave) resArr.push(itemArr);
     }
   }
-
   return resArr;
 }
 
@@ -40,13 +38,13 @@ function arr2d(arr, num, isSave) {
  * @return:
  */
 export function sliceStr(str, num, isSave) {
-  var resArr = [];
-  var sumRound = isSave
+  let resArr = [];
+  const sumRound = isSave
     ? Math.ceil(str.length / num)
     : Math.floor(str.length / num);
-  for (var i = 0; i < sumRound; i++) {
-    var start = i * num;
-    var end = (i + 1) * num;
+  for (let i = 0; i < sumRound; i++) {
+    let start = i * num;
+    let end = (i + 1) * num;
     resArr.push(str.slice(start, end));
   }
   return resArr;
@@ -60,24 +58,23 @@ export function sliceStr(str, num, isSave) {
  */
 
 function multiSort(arr, sortArr) {
-  var sortFn = keySort(sortArr);
+  const sortFn = keySort(sortArr);
   return arr.sort(sortFn);
 }
 
 function keySort(sortArr) {
   return function (a, b) {
     // 关键：每个值都会调用一次比较函数，如果值不相等直接返回，如果值相等，继续下一个循环
-    for (var i = 0; i < sortArr.length; i++) {
-      var sort = sortArr[i];
-      var sortFn = sortMap[sort.type];
-      var _return = sortFn(a[sort.prop], b[sort.prop]);
+    for (const sort of sortArr) {
+      const sortFn = sortMap[sort.type];
+      const _return = sortFn(a[sort.prop], b[sort.prop]);
       if (_return !== 0) return _return;
     }
   };
 }
 
-var sortMap = (function () {
-  var sortMap = {
+const sortMap = (function () {
+  const sortMap = {
     string: normalSort,
     number: numberSort,
     percent: percentSort,
@@ -116,35 +113,33 @@ var sortMap = (function () {
  * @return:
  */
 function clone(data, clonePrototype = false, cache = []) {
-  var type = getType(data);
-  var isPlainObject = type === "object";
-  var isArray = type === "array";
+  const type = getType(data);
+  const isPlainObject = type === "object";
+  const isArray = type === "array";
   if (!isPlainObject && !isArray) {
     return data;
   }
   // 保存遍历过的对象
-  var hasCache = cache.filter(function (item) {
-    return item.init === data;
-  })[0];
+  const hasCache = cache.filter((item) => item.init === data)[0];
   if (hasCache) {
     return cache.copy;
   }
-  var newData = isPlainObject ? {} : [];
+  let newData = isPlainObject ? {} : [];
   cache.push({
     init: data,
     copy: newData,
   });
   if (isPlainObject) {
-    for (var key in data) {
+    for (let key in data) {
       if (clonePrototype) {
         newData[key] = clone(data[key], clonePrototype, cache);
       } else {
-        var isOwn = data.hasOwnProperty(key);
+        let isOwn = data.hasOwnProperty(key);
         isOwn && (newData[key] = clone(data[key], clonePrototype, cache));
       }
     }
   } else if (isArray) {
-    for (var i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
       newData[i] = clone(data[i]);
     }
   }
@@ -157,7 +152,7 @@ function getType(obj) {
   if (obj instanceof Element) {
     return "element";
   }
-  var type = Object.prototype.toString.call(obj);
+  let type = Object.prototype.toString.call(obj);
   type = type.slice(8, -1).toLowerCase();
   return type;
 }
@@ -169,14 +164,14 @@ function getType(obj) {
  */
 function getWeekNumber(src) {
   if (!isDate(src)) return null;
-  var date = new Date(src.getTime());
+  const date = new Date(src.getTime());
   date.setHours(0, 0, 0, 0);
   // 日期该周的周四（date.getDay() + 6) % 7的方法让 周日为起点 改为 周一为起点）
   // 周一到周日为一周：date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
   // 周日到周六为一周：date.setDate(date.getDate() + 4 - date.getDay());
   date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
   // 该年的1月4号,1月4号总是在第一周
-  var week1 = new Date(date.getFullYear(), 0, 4);
+  const week1 = new Date(date.getFullYear(), 0, 4);
   // 调整到第1周的星期四，并计算从日期到第1周的周数。
   // Rounding should be fine for Daylight Saving Time. Its shift should never be more than 12 hours.
   return (
@@ -198,53 +193,54 @@ function getWeekNumber(src) {
  */
 
 function curry(fn) {
-  var fixArgs = Array.prototype.slice.call(arguments, 1);
-  var curryedFn = function () {
-    var fnArgs = Array.prototype.slice.call(arguments);
-    var finalArgs = fixArgs.concat(fnArgs);
+  const fixArgs = Array.prototype.slice.call(arguments, 1);
+  const curryedFn = function () {
+    const fnArgs = Array.prototype.slice.call(arguments);
+    const finalArgs = fixArgs.concat(fnArgs);
     return fn.apply(null, finalArgs);
   };
   return curryedFn;
 }
 
 // 节流
-var throttle = function (fn, cycle) {
-  cycle = cycle || 100;
-  var timer;
+const throttle = (fn, cycle = 100) => {
+  let timer;
   return function () {
-    var execFn = function () {
+    const execFn = () => {
       fn.apply(this, arguments);
       timer = null;
     };
     if (timer === undefined) {
       execFn();
     } else if (timer === null) {
-      timer = setTimeout(execFn, cycle);
+      timer = setTimeout(() => {
+        execFn();
+      }, cycle);
     }
   };
 };
 
 // 防抖
-var debounce = function (fn, delay) {
-  delay = delay || 100;
-  var timer;
+const debounce = (fn, delay = 100) => {
+  let timer;
   return function () {
-    var execFn = function () {
+    const execFn = () => {
       fn.apply(this, arguments);
     };
     if (timer) clearTimeout(timeout);
-    timer = setTimeout(execFn, delay);
+    timer = setTimeout(() => {
+      execFn();
+    }, delay);
   };
 };
 
 // 获取数组里面最大最小值（可以是多层数组）
-var getMinMax = function (arr) {
-  var temMin, temMax, min, max;
+const getMinMax = (arr) => {
+  let temMin, temMax, min, max;
 
-  var setMinMax = function (_arr) {
-    for (var i = 0; i < _arr.length; i++) {
-      var num = _arr[i];
-      if (getType(num) === "array") {
+  const setMinMax = (_arr) => {
+    for (const num of _arr) {
+      if (Array.isArray(num)) {
         setMinMax(num);
       } else if (typeof num === "number") {
         if (temMin === undefined) {
@@ -265,14 +261,12 @@ var getMinMax = function (arr) {
 
   setMinMax(arr);
 
-  var isNumber = [min, max].every(function (item) {
-    return typeof item === "number";
-  });
+  const isNumber = [min, max].every((item) => typeof item === "number");
   return isNumber ? [min, max] : [0, 0];
 };
 
 // 数组去重(每次只跟当前值右边的值进行比较)
-var getUniqArray = function (arr) {
+const getUniqArray = (array) => {
   var temp = [];
   var index = [];
   var l = array.length;

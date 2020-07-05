@@ -1,0 +1,112 @@
+/* 
+  官网:
+  https://webpack.js.org/loaders/babel-loader/#root
+
+  安装:
+  cnpm i -D babel-loader @babel/core @babel/preset-env
+  版本:
+  "babel-loader": "^8.1.0",
+  "@babel/core": "^7.9.0",
+  "@babel/preset-env": "^7.9.5",
+
+  注意:
+  1、@babel/preset-env:babel需要编译的内容（只编译语法），相当于babel-preset-es2015, es2016, es2017及最新版本
+  2、提供ES新API的垫片选择以下其中一种方案
+  
+
+  (1)垫片方案: @babel/polyfill
+  cnpm i -D core-js regenerator-runtime
+  注意:
+  1、适合业务项目使用，会污染全局变量和原型链，但编译体积较小
+  2、@babel/polyfill = core-js + regenerator-runtime（后续官方将放弃@babel/polyfill，推荐单独引入core-js和regenerator-runtime）
+  版本:
+  "core-js": "^3.6.5",
+  "regenerator-runtime": "^0.13.5",
+  配置:
+  {
+    "presets": [
+      ["@babel/preset-env", {
+        "modules": false,
+        "targets": {
+          "browsers": [">1%", "last 2 versions", "not ie <= 8"]
+        },
+        "useBuiltIns": "usage",
+        "corejs": {
+          "version": 3, // 使用core-js@3
+          "proposals": true
+        }
+      }]
+    ]
+  }
+
+  (2)插件按需加载方案:transform-runtime
+  cnpm i -D @babel/runtime-corejs3 @babel/plugin-transform-runtime 
+  注意:
+  1、适合类库项目使用，沙箱环境，但编译体积较大
+  2、@babel/runtime-corejs2可以理解为@babel/polyfill沙箱环境的版本，@babel/runtime-corejs3为@babel/runtime-corejs2的升级版
+  版本:
+  "@babel/plugin-transform-runtime": "^7.9.0",
+  "@babel/runtime-corejs2": "^7.9.2",
+  配置:
+  {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "modules": false,
+          "targets": {
+            "browsers": [">1%", "last 2 versions", "not ie <= 8"]
+          }
+        }
+      ]
+    ],
+    "plugins": [
+      [
+        "@babel/plugin-transform-runtime",
+        {
+          "corejs": 3,
+          "useESModules": true
+        }
+      ]
+    ]
+  }
+
+  @babel/polyfill = core-js + regenerator-runtime , @babel/runtime-corejs3为升级版
+  
+
+  @babel/preset-env 常用配置字段:
+  1、targets: String | Array | { [String]: string } 默认为{}
+    编译的环境
+  2、useBuiltIns: "usage"| "entry"| false 默认为false
+    usage:按需引入,entry:入口全部引入,false:不添加
+  3、modules: "amd" | "umd" | "systemjs" | "commonjs" | false  默认 "commonjs"
+    如果webpack构建环境是2.x/3.x，推荐将modules设置为false，即交由 Webpack 来处理模块化，通过其 TreeShaking 特性将有效减少打包出来的 JS 文件大小
+
+  babel-plugin-transform-runtime插件:
+  该插件主要做了三件事
+  （1）自动转换generators/async
+  （2）使用core-js来按需给内置类型打上polyfill。
+  （3）通过helpers 选项自动移除嵌入的babel helper,并且用module引用来代替。否则每个文件中都会加入这些inline babel helper,造成代码冗余。默认为ture。
+*/
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "modules": false,
+        "targets": {
+          "browsers": [">1%", "last 2 versions", "not ie <= 8"]
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "corejs": 3,
+        "useESModules": true
+      }
+    ]
+  ]
+}
